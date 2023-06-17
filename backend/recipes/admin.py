@@ -22,7 +22,9 @@ class UserRecipeInline(admin.TabularInline):
 
 class UserAdmin(admin.ModelAdmin):
     inlines = (UserRecipeInline, UserFavoriteInline, )
-    list_display = ('username', )
+    list_display = ('username', 'email', 'is_superuser')
+    search_fields = ('username', 'email')
+    empty_value_display = '-пусто-'
 
 
 admin.site.register(User, UserAdmin)
@@ -53,9 +55,10 @@ class IngredientAdmin(admin.ModelAdmin):
     list_display_links = ('name',)
     empty_value_display = '-пусто-'
 
+
 class RecipeIngredientInline(admin.TabularInline):
     model = IngredientForRecipe
-    extra = 4
+    extra = 2
 
 
 @admin.register(Recipe)
@@ -83,7 +86,7 @@ class Favorite(admin.ModelAdmin):
 
 @admin.register(ShoppingCart)
 class ShoppingCart(admin.ModelAdmin):
-    list_display = ('cart_owner','recipe', )
+    list_display = ('cart_owner', 'recipe', )
     list_filter = ('cart_owner',)
     raw_id_fields = ('cart_owner',)
     empty_value_display = '-пусто-'
