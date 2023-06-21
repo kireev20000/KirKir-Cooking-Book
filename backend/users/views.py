@@ -1,13 +1,12 @@
 from django.shortcuts import get_object_or_404
-from rest_framework.pagination import LimitOffsetPagination
-
 from rest_framework import status, viewsets
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import SubscribeSerializer
 from .models import Subscribe, User
+from .serializers import SubscribeSerializer
 
 
 class SubscriptionsViewSet(viewsets.ModelViewSet):
@@ -53,4 +52,5 @@ class SubscribeAddDelView(APIView):
         sub_status.delete()
         return Response(
             {'success': f'Вы успешно отписались от {author.username}!'},
-            status=status.HTTP_204_NO_CONTENT)
+            status=status.HTTP_204_NO_CONTENT
+        )

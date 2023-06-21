@@ -12,7 +12,7 @@ class UserAdmin(admin.ModelAdmin):
         'first_name',
         'last_name',
     )
-    list_filter = ('username', 'is_superuser',)
+    list_filter = ('username', 'email', 'is_superuser',)
     list_display_links = ('email',)
     search_fields = ('username', 'email',)
     empty_value_display = '-пусто-'

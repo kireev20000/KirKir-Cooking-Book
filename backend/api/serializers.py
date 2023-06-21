@@ -1,21 +1,23 @@
 from django.shortcuts import get_object_or_404
 from drf_extra_fields.fields import Base64ImageField
-from recipes.models import (Favorite, Ingredient, IngredientForRecipe, Recipe,
-                            ShoppingCart, Tag)
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from users.models import User
 from .mixins import ReadOnlyMixin
+from recipes.models import (Favorite, Ingredient, IngredientForRecipe, Recipe,
+                            ShoppingCart, Tag)
+from users.models import User
 
 
 class TagSerializer(ReadOnlyMixin, serializers.ModelSerializer):
+
     class Meta:
         model = Tag
         fields = '__all__'
 
 
 class IngredientSerializer(ReadOnlyMixin, serializers.ModelSerializer):
+
     class Meta:
         model = Ingredient
         fields = '__all__'
@@ -39,6 +41,7 @@ class IngredientForRecipeSerializer(ReadOnlyMixin, serializers.ModelSerializer):
 
 
 class FavoriteRecipeSerializer(ReadOnlyMixin, serializers.ModelSerializer):
+
     id = serializers.ReadOnlyField(source='recipe.id')
     name = serializers.ReadOnlyField(source='recipe.name')
     image = serializers.CharField(source='recipe.image', read_only=True)
@@ -55,9 +58,9 @@ class FavoriteRecipeSerializer(ReadOnlyMixin, serializers.ModelSerializer):
 
     def validate(self, data):
         user = self.context.get('request').user
-        recipe = self.context.get('recipe')
+        recipe_id = self.context.get('recipe_id')
 
-        if Favorite.objects.filter(recipe_subscriber=user, recipe=recipe).exists():
+        if Favorite.objects.filter(recipe_subscriber=user, recipe=recipe_id).exists():
             raise ValidationError({'errors': 'Этот рецепт уже в вашем избранном!'})
         return data
 
@@ -154,12 +157,11 @@ class RecipeCRUDSerializer(serializers.ModelSerializer):
         return instance
 
 
-class ShoppingCartSerializer(serializers.ModelSerializer):
+class ShoppingCartSerializer(ReadOnlyMixin, serializers.ModelSerializer):
 
     class Meta:
         model = ShoppingCart
         fields = ('cart_owner', 'recipe')
-        read_only_fields = ('cart_owner', 'recipe')
 
     def validate(self, data):
         cart_owner = self.context.get('request').user
@@ -167,17 +169,8 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
         data['recipe'] = recipe
         data['cart_owner'] = cart_owner
         if ShoppingCart.objects.filter(cart_owner=cart_owner,
-                                       recipe=recipe).exists():
-            raise ValidationError({'errors': 'Рецепт уже в корзине!'})
+                                       recipe=recipe):
+            raise ValidationError(
+                {'errors': f'Рецепт {recipe.name} уже в вашей корзине!'}
+            )
         return data
-
-    def to_representation(self, instance):
-        """
-        Метод принимает на вход объект сериализации
-        и возвращает словарь с данными для отображения.
-        """
-        request = self.context.get('request')
-        return RecipeCRUDSerializer(
-            instance.recipe,
-            context={'request': request}
-        ).data

@@ -4,7 +4,6 @@ from .models import (Favorite, Ingredient, IngredientForRecipe, Recipe,
                      ShoppingCart, Tag)
 from users.models import User
 
-
 admin.site.unregister(User)
 
 
@@ -64,6 +63,7 @@ class RecipeIngredientInline(admin.TabularInline):
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     inlines = (RecipeIngredientInline, )
+    readonly_fields = ('in_favorites_count',)
     list_display = (
         'id',
         'name',
@@ -74,6 +74,11 @@ class RecipeAdmin(admin.ModelAdmin):
     raw_id_fields = ('author', )
     list_filter = ('author', 'tags', )
     empty_value_display = '-пусто-'
+
+    def in_favorites_count(self, obj):
+        return obj.in_favorite.count()
+
+    in_favorites_count.short_description = 'Добавлений в избранное:'
 
 
 @admin.register(Favorite)

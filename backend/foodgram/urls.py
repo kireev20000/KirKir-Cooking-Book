@@ -14,14 +14,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf import settings
+from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
-
-from rest_framework import permissions
-from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-from django.conf.urls import url
+from drf_yasg.views import get_schema_view
+from rest_framework import permissions
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -36,7 +35,7 @@ schema_view = get_schema_view(
    openapi.Info(
       title="Foodgram API",
       default_version='v1',
-      description="Документация для приложения Recipe проекта Foodgram",
+      description="Документация для проекта Foodgram",
       contact=openapi.Contact(email="admin@foodgram.ru"),
       license=openapi.License(name="BSD License"),
    ),
