@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
-from .models import Subscribe
 from recipes.models import Recipe
+
+from .models import Subscribe
 
 
 class RecipeShortListSerializer(serializers.ModelSerializer):

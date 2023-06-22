@@ -23,7 +23,7 @@ class Tag(models.Model):
             )
         ],
     )
-    slug = models.CharField(
+    slug = models.SlugField(
         max_length=255,
         unique=True,
         verbose_name='Слаг',
@@ -159,6 +159,12 @@ class Favorite(models.Model):
 
     class Meta:
         ordering = ("-id",)
+        constraints = [
+            models.UniqueConstraint(
+                fields=['recipe', 'recipe_subscriber'],
+                name='unique_recipe_subscriber_and_recipe'
+            ),
+        ]
         verbose_name = 'Рецепт в избранном'
         verbose_name_plural = 'Избранные рецепты'
 

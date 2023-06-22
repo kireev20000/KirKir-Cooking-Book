@@ -1,10 +1,15 @@
-"""Эндпойнты приложения YaMDb."""
+"""Эндпойнты приложения FoodGram."""
 
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from api.views import (FavoriteViewSet, IngredientViewSet, RecipeViewSet,
-                       ShoppingCartViewSet, TagViewSet)
+from api.views import (
+    FavoriteViewSet,
+    IngredientViewSet,
+    RecipeViewSet,
+    ShoppingCartViewSet,
+    TagViewSet
+)
 from users.views import SubscribeAddDelView, SubscriptionsViewSet
 
 app_name = 'api'
@@ -24,6 +29,6 @@ urlpatterns = [
     path('', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
     path('users/<int:user_id>/subscribe/', SubscribeAddDelView.as_view()),
-    path('recipes/download_shopping_cart/', ShoppingCartViewSet.as_view({'get': 'DownloadShoppingCart'})),
+    path('recipes/download_shopping_cart/', ShoppingCartViewSet.as_view({'get': 'download_shopping_cart'})),
     path('', include(router_v1.urls)),
 ]

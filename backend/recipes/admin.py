@@ -1,8 +1,15 @@
 from django.contrib import admin
 
-from .models import (Favorite, Ingredient, IngredientForRecipe, Recipe,
-                     ShoppingCart, Tag)
 from users.models import User
+
+from .models import (
+    Favorite,
+    Ingredient,
+    IngredientForRecipe,
+    Recipe,
+    ShoppingCart,
+    Tag
+)
 
 admin.site.unregister(User)
 

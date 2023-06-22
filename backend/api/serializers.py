@@ -3,10 +3,18 @@ from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from .mixins import ReadOnlyMixin
-from recipes.models import (Favorite, Ingredient, IngredientForRecipe, Recipe,
-                            ShoppingCart, Tag)
+from recipes.models import (
+    Favorite,
+    Ingredient,
+    IngredientForRecipe,
+    Recipe,
+    ShoppingCart,
+    Tag
+)
 from users.models import User
+from users.serializers import RecipeShortListSerializer
+
+from .mixins import ReadOnlyMixin
 
 
 class TagSerializer(ReadOnlyMixin, serializers.ModelSerializer):
@@ -163,6 +171,12 @@ class ShoppingCartSerializer(ReadOnlyMixin, serializers.ModelSerializer):
         model = ShoppingCart
         fields = ('cart_owner', 'recipe')
 
+    def to_representation(self, instance):
+        return RecipeShortListSerializer(
+            instance.recipe,
+            context={'request': self.context.get('request')}
+        ).data
+
     def validate(self, data):
         cart_owner = self.context.get('request').user
         recipe = self.context.get('recipe')
@@ -174,3 +188,4 @@ class ShoppingCartSerializer(ReadOnlyMixin, serializers.ModelSerializer):
                 {'errors': f'Рецепт {recipe.name} уже в вашей корзине!'}
             )
         return data
+
