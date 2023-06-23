@@ -2,8 +2,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework.fields import Field
 from rest_framework import mixins, status
 
-from recipes.models import ShoppingCart, Favorite
 from rest_framework.response import Response
+
 
 class ReadOnlyMixin(Field):
 
@@ -19,11 +19,10 @@ class ReadOnlyMixin(Field):
 class CustomListRecipeDeleteMixin(mixins.DestroyModelMixin):
 
     def destroy(self, request, *args, **kwargs):
-
         model = kwargs.get('model')
         args = {
             'recipe': self.kwargs.get('recipe_id'),
-             kwargs.get('fkey'): self.request.user
+            kwargs.get('fkey'): self.request.user
         }
 
         if not model.objects.filter(**args):
