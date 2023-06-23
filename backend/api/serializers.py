@@ -128,21 +128,21 @@ class RecipeCRUDSerializer(serializers.ModelSerializer):
     def get_is_favorited(self, obj):
         user = self.context.get('request').user
         return (
-                user.is_authenticated
-                and Favorite.objects.filter(
-                    recipe=obj,
-                    recipe_subscriber=user
-                ).exists()
+            user.is_authenticated
+            and Favorite.objects.filter(
+                recipe=obj,
+                recipe_subscriber=user,
+            ).exists()
         )
 
     def get_is_in_shopping_cart(self, obj):
         user = self.context.get('request').user
         return (
-                user.is_authenticated
-                and ShoppingCart.objects.filter(
-                    recipe=obj,
-                    cart_owner=user
-                ).exists()
+            user.is_authenticated
+            and ShoppingCart.objects.filter(
+                recipe=obj,
+                cart_owner=user,
+            ).exists()
         )
 
     @staticmethod
