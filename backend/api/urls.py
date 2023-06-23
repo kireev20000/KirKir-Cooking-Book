@@ -8,7 +8,7 @@ from api.views import (
     IngredientViewSet,
     RecipeViewSet,
     ShoppingCartViewSet,
-    TagViewSet
+    TagViewSet,
 )
 from users.views import SubscribeAddDelView, SubscriptionsViewSet
 

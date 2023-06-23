@@ -92,7 +92,7 @@ class FavoriteViewSet(mixins.CreateModelMixin,
         )
 
     def delete(self, request, recipe_id):
-        return super().destroy(self, request, model=Favorite)
+        return super().destroy(self, request, model=Favorite, fkey='recipe_subscriber')
 
 
 class ShoppingCartViewSet(mixins.CreateModelMixin,
@@ -114,7 +114,7 @@ class ShoppingCartViewSet(mixins.CreateModelMixin,
         return context
 
     def delete(self, request, recipe_id):
-        return super().destroy(self, request, model=ShoppingCart)
+        return super().destroy(self, request, model=ShoppingCart, fkey='cart_owner')
 
     @staticmethod
     def download_shopping_cart(request):
@@ -122,8 +122,10 @@ class ShoppingCartViewSet(mixins.CreateModelMixin,
             return Response({'errors': 'Ваша корзина пуста!'},
                             status=status.HTTP_400_BAD_REQUEST)
         shopping_cart = IngredientForRecipe.objects.filter(
-            recipe__shopping_cart__cart_owner=request.user).values(
-            'ingredient__name', 'ingredient__measurement_unit').annotate(
+            recipe__shopping_cart__cart_owner=request.user
+        ).values(
+            'ingredient__name', 'ingredient__measurement_unit'
+        ).annotate(
             total=Sum('amount')
         )
 

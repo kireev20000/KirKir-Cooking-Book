@@ -19,36 +19,25 @@ class ReadOnlyMixin(Field):
 class CustomListRecipeDeleteMixin(mixins.DestroyModelMixin):
 
     def destroy(self, request, *args, **kwargs):
-        recipe_id = self.kwargs.get('recipe_id')
-        user = self.request.user
+
         model = kwargs.get('model')
-        if model == ShoppingCart:
-            if not ShoppingCart.objects.filter(recipe=recipe_id,
-                                               cart_owner=user):
-                return Response({'errors': 'Рецепт не добавлен в список покупок'},
-                                status=status.HTTP_400_BAD_REQUEST)
-            instance = get_object_or_404(
-                ShoppingCart,
-                cart_owner=user,
-                recipe=recipe_id,
+        args = {
+            'recipe': self.kwargs.get('recipe_id'),
+             kwargs.get('fkey'): self.request.user
+        }
+
+        if not model.objects.filter(**args):
+            return Response(
+                {'errors': 'Рецепт не добавлен в список!'},
+                status=status.HTTP_400_BAD_REQUEST,
             )
-        elif model == Favorite:
-            if not Favorite.objects.filter(recipe=recipe_id,
-                                           recipe_subscriber=user):
-                return Response(
-                    {'errors': 'У вас нет этого рецепта в избранном!'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            instance = get_object_or_404(
-                Favorite,
-                recipe_subscriber=user,
-                recipe=recipe_id
-            )
+        instance = get_object_or_404(model, **args)
         instance_name = instance.recipe.name
         self.perform_destroy(instance)
         return Response(
             {'success': f'Рецепт {instance_name} удален из вашего списка!'},
-            status=status.HTTP_204_NO_CONTENT)
+            status=status.HTTP_204_NO_CONTENT,
+        )
 
     def perform_destroy(self, instance):
         instance.delete()
