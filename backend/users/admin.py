@@ -28,5 +28,3 @@ class SubscribeAdmin(admin.ModelAdmin):
     list_filter = ('user', 'author',)
     search_fields = ('user__username', 'author__username',)
     empty_value_display = '-пусто-'
-
-

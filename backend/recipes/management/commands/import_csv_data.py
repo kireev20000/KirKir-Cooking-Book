@@ -14,7 +14,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        answer = input('Вы хотите импортировать 2000 ингредиентов. Продолжить? (y/n)')
+        answer = input('Вы хотите импортировать 2000 '
+                       'ингредиентов. Продолжить? (y/n)')
         if answer == 'n':
             self.stdout.write('Скрипт прерван.')
             quit()
@@ -27,7 +28,10 @@ class Command(BaseCommand):
                 name, unit = row
                 print(name, unit)
 
-                if Ingredient.objects.filter(name=name, measurement_unit=unit).exists():
+                if Ingredient.objects.filter(
+                        name=name,
+                        measurement_unit=unit
+                ).exists():
                     count_old += 1
                     continue
                 try:
@@ -37,7 +41,7 @@ class Command(BaseCommand):
                     raise CommandError(
                         f'Ошибка: {e}, строка {row}'
                     )
-        self.stdout.write(f'Таблица импортирована! Новых {count_new}, пропущено дубликатов {count_old}')
-
-
-
+        self.stdout.write(
+            f'Таблица импортирована! Новых {count_new}, '
+            f'пропущено дубликатов {count_old}'
+        )

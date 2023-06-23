@@ -3,8 +3,7 @@ from datetime import datetime
 from django.db.models import Sum
 from django.shortcuts import HttpResponse, get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, status, viewsets, mixins
-from rest_framework.decorators import action
+from rest_framework import filters, mixins, status, viewsets
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -92,7 +91,12 @@ class FavoriteViewSet(mixins.CreateModelMixin,
         )
 
     def delete(self, request, recipe_id):
-        return super().destroy(self, request, model=Favorite, fkey='recipe_subscriber')
+        return super().destroy(
+            self,
+            request,
+            model=Favorite,
+            fkey='recipe_subscriber'
+        )
 
 
 class ShoppingCartViewSet(mixins.CreateModelMixin,
@@ -114,7 +118,12 @@ class ShoppingCartViewSet(mixins.CreateModelMixin,
         return context
 
     def delete(self, request, recipe_id):
-        return super().destroy(self, request, model=ShoppingCart, fkey='cart_owner')
+        return super().destroy(
+            self,
+            request,
+            model=ShoppingCart,
+            fkey='cart_owner'
+        )
 
     @staticmethod
     def download_shopping_cart(request):

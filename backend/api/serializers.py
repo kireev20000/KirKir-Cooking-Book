@@ -31,7 +31,8 @@ class IngredientSerializer(ReadOnlyMixin, serializers.ModelSerializer):
         fields = '__all__'
 
 
-class IngredientForRecipeSerializer(ReadOnlyMixin, serializers.ModelSerializer):
+class IngredientForRecipeSerializer(ReadOnlyMixin,
+                                    serializers.ModelSerializer):
     id = serializers.ReadOnlyField(source='ingredient.id', )
     name = serializers.ReadOnlyField(source='ingredient.name', )
     measurement_unit = serializers.ReadOnlyField(
@@ -68,8 +69,13 @@ class FavoriteRecipeSerializer(ReadOnlyMixin, serializers.ModelSerializer):
         user = self.context.get('request').user
         recipe_id = self.context.get('recipe_id')
 
-        if Favorite.objects.filter(recipe_subscriber=user, recipe=recipe_id).exists():
-            raise ValidationError({'errors': 'Этот рецепт уже в вашем избранном!'})
+        if Favorite.objects.filter(
+                recipe_subscriber=user,
+                recipe=recipe_id
+        ).exists():
+            raise ValidationError(
+                {'errors': 'Этот рецепт уже в вашем избранном!'}
+            )
         return data
 
 
@@ -121,15 +127,23 @@ class RecipeCRUDSerializer(serializers.ModelSerializer):
 
     def get_is_favorited(self, obj):
         user = self.context.get('request').user
-        return (user.is_authenticated and
-                Favorite.objects.filter(recipe=obj, recipe_subscriber=user)
-                .exists())
+        return (
+                user.is_authenticated
+                and Favorite.objects.filter(
+                    recipe=obj,
+                    recipe_subscriber=user
+                ).exists()
+        )
 
     def get_is_in_shopping_cart(self, obj):
         user = self.context.get('request').user
-        return (user.is_authenticated and
-                ShoppingCart.objects.filter(recipe=obj, cart_owner=user)
-                .exists())
+        return (
+                user.is_authenticated
+                and ShoppingCart.objects.filter(
+                    recipe=obj,
+                    cart_owner=user
+                ).exists()
+        )
 
     @staticmethod
     def get_ingredients(recipe):
@@ -140,9 +154,12 @@ class RecipeCRUDSerializer(serializers.ModelSerializer):
     @staticmethod
     def add_ingredients(new_recipe, ingredients):
         IngredientForRecipe.objects.bulk_create(
-            IngredientForRecipe(recipe=new_recipe, ingredient=get_object_or_404(
-                    Ingredient, id=ingredient.get('id')),
-                amount=ingredient.get('amount'))
+            IngredientForRecipe(
+                recipe=new_recipe,
+                ingredient=get_object_or_404(
+                    Ingredient, id=ingredient.get('id')
+                ), amount=ingredient.get('amount')
+            )
             for ingredient in ingredients)
         return new_recipe
 
@@ -188,4 +205,3 @@ class ShoppingCartSerializer(ReadOnlyMixin, serializers.ModelSerializer):
                 {'errors': f'Рецепт {recipe.name} уже в вашей корзине!'}
             )
         return data
-

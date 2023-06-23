@@ -29,7 +29,9 @@ class RecipeFilter(filters.FilterSet):
         if self.request.user.is_anonymous:
             raise AuthenticationFailed({'errors': 'Вам нужно авторизоваться!'})
         if value:
-            return queryset.filter(in_favorite__recipe_subscriber=self.request.user)
+            return queryset.filter(
+                in_favorite__recipe_subscriber=self.request.user
+            )
         return queryset
 
     def filter_is_in_shopping_cart(self, queryset, name, value):
