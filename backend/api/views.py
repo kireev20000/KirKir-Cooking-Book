@@ -133,7 +133,8 @@ class ShoppingCartViewSet(mixins.CreateModelMixin,
         shopping_cart = IngredientForRecipe.objects.filter(
             recipe__shopping_cart__cart_owner=request.user
         ).values(
-            'ingredient__name', 'ingredient__measurement_unit'
+            'ingredient__name',
+            'ingredient__measurement_unit',
         ).annotate(
             total=Sum('amount')
         )
