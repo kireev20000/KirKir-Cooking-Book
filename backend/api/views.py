@@ -4,7 +4,7 @@ from django.db.models import Sum
 from django.shortcuts import HttpResponse, get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, status, viewsets
-from rest_framework.pagination import LimitOffsetPagination
+
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
@@ -19,6 +19,7 @@ from recipes.models import (
 
 from .filters import RecipeFilter
 from .mixins import CustomListRecipeDeleteMixin
+from .pagination import CustomPagination
 from .permissions import IsAuthorOrAdminOrReadOnly
 from .serializers import (
     FavoriteRecipeSerializer,
@@ -59,7 +60,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     queryset = Recipe.objects.all()
     serializer_class = RecipeCRUDSerializer
-    pagination_class = LimitOffsetPagination
+    pagination_class = CustomPagination
     permission_classes = (IsAuthorOrAdminOrReadOnly, )
     filter_backends = (DjangoFilterBackend, )
     filterset_class = RecipeFilter

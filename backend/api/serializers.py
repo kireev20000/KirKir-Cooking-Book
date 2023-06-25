@@ -153,6 +153,9 @@ class RecipeCRUDSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def add_ingredients(new_recipe, ingredients):
+        for ingredient in ingredients:
+            if not str(ingredient.get('amount')).isdigit():
+                raise ValidationError('errors: Количество должно быть числом!')
         IngredientForRecipe.objects.bulk_create(
             IngredientForRecipe(
                 recipe=new_recipe,
