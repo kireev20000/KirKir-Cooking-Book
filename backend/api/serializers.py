@@ -178,7 +178,8 @@ class RecipeCRUDSerializer(serializers.ModelSerializer):
         instance.tags.clear()
         IngredientForRecipe.objects.filter(recipe=instance).delete()
         instance.tags.set(self.initial_data.get('tags'))
-        self.add_ingredients(instance, self.initial_data.get('ingredients'))
+        ingredients = self.initial_data.get('ingredients')
+        self.add_ingredients(instance, ingredients)
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
