@@ -140,7 +140,7 @@ class ShoppingCartViewSet(mixins.CreateModelMixin,
             total=Sum('amount')
         )
 
-        text = f'Список покупокна  {datetime.now().strftime("%d.%m.%Y")}:\n\n'
+        text = f'Список покупкна  {datetime.now().strftime("%d.%m.%Y")}:\n\n'
         for ingredient in shopping_cart:
             text += (f'{ingredient["ingredient__name"]}: '
                      f'{ingredient["total"]}'
